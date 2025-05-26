@@ -1,0 +1,12 @@
+---
+services:
+  checkmk:
+    container_name: checkmk
+    hostname: checkmk
+    image: checkmk/check-mk-raw:2.3.0-latest
+    env_file: checkmk.env
+    ports:
+      - 5000:5000
+      - 8000:8000
+    volumes:
+      - /custom/path/to/storage/checkmk/data:/omd/sites

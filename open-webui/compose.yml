@@ -1,0 +1,11 @@
+---
+services:
+  open-webui:
+    container_name: open-webui
+    hostname: open-webui
+    image: ghcr.io/open-webui/open-webui:0.6.10
+    env_file: open-webui.env
+    ports:
+      - 8080:8080/tcp
+    volumes:
+      - /custom/path/to/storage/open-webui:/app/backend/data

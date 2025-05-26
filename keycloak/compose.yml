@@ -1,0 +1,35 @@
+---
+services:
+  keycloak-db:
+    image: postgres:17.4
+    container_name: 'keycloak-db'
+    hostname: 'keycloak-db'
+    restart: unless-stopped
+    env_file: 'keycloak-db.env'
+    volumes:
+      - /custom/path/to/storage/keycloak/db:/var/lib/postgresql/data
+    networks:
+      - keycloak-backend
+    ports:
+      - 5432
+
+  keycloak-app:
+    image: keycloak/keycloak:26.2
+    container_name: 'keycloak-app'
+    hostname: 'keycloak-app'
+    restart: unless-stopped
+    command: ["start"]
+    depends_on:
+      - keycloak-db
+    env_file: 'keycloak-app.env'
+    networks:
+      - keycloak-frontend
+      - keycloak-backend
+    ports:
+      - 8080:8080
+
+networks:
+  keycloak-frontend:
+    name: keycloak-frontend
+  keycloak-backend:
+    name: keycloak-backend

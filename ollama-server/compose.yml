@@ -1,0 +1,18 @@
+---
+services:
+  ollama-server:
+    container_name: ollama-server
+    hostname: ollama-server
+    image: ollama/ollama:0.6.5
+    env_file: ollama-server.env
+    ports:
+      - 11434:11434
+    volumes:
+      - /custom/path/to/storage/ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+           - driver: nvidia
+             device_ids: ['0']
+             capabilities: [gpu]

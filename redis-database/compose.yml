@@ -1,0 +1,12 @@
+---
+services:
+    redis-database:
+        image: redis:7.4.2
+        container_name: 'redis-database'
+        hostname: 'redis-database'
+        env_file: 'redis.env'
+        command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
+        ports:
+            - 6379:6379
+        volumes:
+            - /custom/path/to/storage/redis-database/data:/data

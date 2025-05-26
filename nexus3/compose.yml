@@ -1,0 +1,11 @@
+---
+services:
+  nexus3:
+    container_name: nexus3
+    hostname: nexus3
+    image: sonatype/nexus3:3.79.1-java17-alpine
+    ports:
+      - 8081:8081/tcp
+      - 8082:8082/tcp
+    volumes:
+      - /custom/path/to/storage/nexus3/nexus-data:/nexus-data

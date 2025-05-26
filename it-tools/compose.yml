@@ -1,0 +1,8 @@
+---
+services:
+  it-tools:
+    container_name: it-tools
+    hostname: it-tools
+    image: corentinth/it-tools:2024.10.22-7ca5933
+    ports:
+      - 80:80/tcp

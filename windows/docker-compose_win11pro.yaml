@@ -1,0 +1,23 @@
+services:
+  win11pro:
+    image: dockurr/windows:4.33
+    container_name: win11pro
+    environment:
+      VERSION: "win11"
+      RAM_SIZE: "8G"
+      CPU_CORES: "2"
+      DISK_SIZE: "80G"
+      USERNAME: "User"
+      PASSWORD: "Password"
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    stop_grace_period: 2m
+    volumes:
+      - /custom/path/to/storage/win11pro-storage:/storage
+      - /custom/path/to/storage/win11pro-data:/data

@@ -1,0 +1,15 @@
+---
+services:
+  transmission-app:
+    container_name: transmission-app
+    hostname: transmission-app
+    image: linuxserver/transmission:4.0.6
+    env_file: 'transmission-app.env'
+    ports:
+      - 9091:9091       # Transmission UI port
+      - 39091:39091/tcp # Torrent TCP port
+      - 39091:39091/udp # Torrent UDP port
+    volumes:
+      - /custom/path/to/storage/transmission/config:/config
+      - /custom/path/to/storage/transmission/downloads:/downloads
+      - /custom/path/to/storage/transmission/watch:/watch

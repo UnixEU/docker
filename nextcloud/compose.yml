@@ -1,0 +1,87 @@
+---
+services:
+  nextcloud-app:
+    container_name: nextcloud-app
+    hostname: nextcloud-app
+    image: nextcloud:31.0.4-apache
+    environment:
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+      MYSQL_USER: /run/secrets/mysql_user
+      MYSQL_DATABASE: /run/secrets/mysql_database
+      MYSQL_HOST: /run/secrets/mysql_host
+    secrets:
+      - mysql_password
+      - mysql_user
+      - mysql_database
+      - mysql_host
+    depends_on:
+      - nextcloud-db
+      - nextcloud-redis
+    networks:
+      - nextcloud-frontend
+      - nextcloud-backend
+    ports:
+      - 80:80
+    volumes:
+      - /custom/path/to/storage/nextcloud/data:/var/www/html
+      - /custom/path/to/storage/nextcloud/nextcloud:/var/www/html/data
+      - /custom/path/to/storage/nextcloud/config:/var/www/html/config
+      - /custom/path/to/storage/nextcloud/apps:/var/www/html/custom_apps
+
+  nextcloud-db:
+    container_name: nextcloud-db
+    hostname: nextcloud-db
+    image: mariadb:11.4
+    environment:
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+      MYSQL_USER: /run/secrets/mysql_user
+      MYSQL_DATABASE: /run/secrets/mysql_database
+      MYSQL_HOST: /run/secrets/mysql_host
+    secrets:
+      - mysql_root_password
+      - mysql_password
+      - mysql_user
+      - mysql_database
+      - mysql_host
+    command:
+      - "--transaction-isolation=READ-COMMITTED"
+      - "--log-bin=binlog"
+      - "--binlog-format=ROW"
+    networks:
+      - nextcloud-backend
+    ports:
+      - 3306
+    volumes:
+      - /custom/path/to/storage/nextcloud/mysql:/var/lib/mysql
+
+  nextcloud-redis:
+    image: redis:7.4.2
+    container_name: 'nextcloud-redis'
+    hostname: 'nextcloud-redis'
+    env_file: redis.env
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
+    networks:
+      - nextcloud-backend
+    ports:
+      - 6379
+    volumes:
+      - /custom/path/to/storage/nextcloud/redis-db/data:/data
+
+networks:
+  fnextcloud-frontend:
+    name: nextcloud-frontend
+  nextcloud-backend:
+    name: nextcloud-backend
+
+secrets:
+  mysql_root_password:
+    file: ./mysql_root_password
+  mysql_password:
+    file: ./mysql_password
+  mysql_user:
+    file: ./mysql_user
+  mysql_database:
+    file: ./mysql_database
+  mysql_host:
+    file: ./mysql_host

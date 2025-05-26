@@ -1,0 +1,42 @@
+---
+services:
+  vllm-server:
+    container_name: vllm-server
+    hostname: vllm-server
+    image: vllm/vllm-openai:v0.8.4
+    env_file: vllm-server.env
+    ipc: host
+    command:
+      - "--load-format"  # Possible choices: auto, pt, safetensors, npcache, dummy, tensorizer
+      - "auto"
+      - "--config-format"  # Possible choices: auto, hf, mistral. Default: “ConfigFormat.AUTO”
+      - "auto"
+      - "--dtype"  # Possible choices: auto, half, float16, bfloat16, float, float32
+      - "auto"
+      - "--kv-cache-dtype"  # Possible choices: auto, fp8
+      - "auto"
+      - "--max-num-seqs"  # Default 256
+      - "256"
+      - "--max-model-len" # If not specified tries to run token length as configured for the model
+      - "32768"
+      - "--device"  # Possible choices: auto, cuda, neuron, cpu
+      - "cuda"
+      - "--gpu-memory-utilization"  # Fraction of the memory. Default: 0.9 (90%)
+      - "0.9"
+      - "--pipeline-parallel-size"  # Number of pipeline stages. Default: 1
+      - "1"
+      - "--tensor-parallel-size"  # Number of tensor parallel replicas. Default: 1
+      - "1"
+      - "--model"  # Model to host as named on Huggingface model card
+      - "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
+    ports:
+      - 8000:8000/tcp
+    volumes:
+      - /custom/path/to/storage/huggingface:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+           - driver: nvidia
+             device_ids: ['0']
+             capabilities: [gpu]
